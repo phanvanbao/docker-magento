@@ -1,0 +1,62 @@
+version: '3'
+services:
+    php74:
+        image: rogerdz/php-fpm:7.4
+        env_file: env/user.env
+        volumes:
+            - ./conf/php/custom.ini:/usr/local/etc/php/conf.d/custom.ini
+            - ${WORK_DIR}:${WORK_DIR}
+            - sock_data:/var/run/php
+            - ./conf/php/msmtprc:/etc/msmtprc
+        restart: always
+        container_name: php74
+    php73:
+        image: rogerdz/php-fpm:7.3
+        env_file: env/user.env
+        volumes:
+            - ./conf/php/custom.ini:/usr/local/etc/php/conf.d/custom.ini
+            - ${WORK_DIR}:${WORK_DIR}
+            - sock_data:/var/run/php
+            - ./conf/php/msmtprc:/etc/msmtprc
+        restart: always
+        container_name: php73
+    # php72:
+    #     image: rogerdz/php-fpm:7.2
+    #     env_file: env/user.env
+    #     volumes:
+    #         - ./conf/php/custom.ini:/usr/local/etc/php/conf.d/custom.ini
+    #         - ${WORK_DIR}:${WORK_DIR}
+    #         - sock_data:/var/run/php
+    #         - ./conf/php/msmtprc:/etc/msmtprc
+    #     restart: always
+    #     container_name: php72
+    # php71:
+    #     image: rogerdz/php-fpm:7.1
+    #     env_file: env/user.env
+    #     volumes:
+    #         - ./conf/php/custom.ini:/usr/local/etc/php/conf.d/custom.ini
+    #         - ${WORK_DIR}:${WORK_DIR}
+    #         - sock_data:/var/run/php
+    #         - ./conf/php/msmtprc:/etc/msmtprc
+    #     restart: always
+    #     container_name: php71
+    # php70:
+    #     image: rogerdz/php-fpm:7.0
+    #     env_file: env/user.env
+    #     volumes:
+    #         - ./conf/php/custom.ini:/usr/local/etc/php/conf.d/custom.ini
+    #         - ${WORK_DIR}:${WORK_DIR}
+    #         - sock_data:/var/run/php
+    #         - ./conf/php/msmtprc:/etc/msmtprc
+    #     restart: always
+    #     container_name: php70
+    # php56:
+    #     image: rogerdz/php-fpm:5.6
+    #     env_file: env/user.env
+    #     volumes:
+    #         - ./conf/php/custom.ini:/usr/local/etc/php/conf.d/custom.ini
+    #         - ${WORK_DIR}:${WORK_DIR}
+    #         - sock_data:/var/run/php
+    #         - ./conf/php/msmtprc:/etc/msmtprc
+    #     restart: always
+    #     container_name: php56

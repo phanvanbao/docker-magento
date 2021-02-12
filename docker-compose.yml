@@ -1,0 +1,85 @@
+version: '3'
+services:
+    nginx:
+        build: ./build/nginx
+        env_file: env/user.env
+        volumes:
+            - ./conf/nginx:/etc/nginx/conf.d
+            - ./data/ssl:/etc/nginx/ssl
+            - ${WORK_DIR}:${WORK_DIR}
+            - sock_data:/var/run/php
+        ports:
+            - "80:80"
+            - "443:443"
+        restart: always
+        container_name: nginx
+    mariadb:
+        image: mariadb:${MARIADB_VERSION}
+        env_file: env/mysql.env
+        volumes:
+            - ./conf/mariadb/custom.cnf:/etc/mysql/conf.d/custom.cnf
+            - /var/lib/mysqldata:/var/lib/mysql
+        restart: always
+        container_name: mariadb
+    cli:
+        image: rogerdz/multi-php-cli
+        env_file: 
+            - env/user.env
+            - env/blackfire.env
+        volumes:
+            - ~/.composer:/home/dev/.composer
+            - ~/.ssh:/home/dev/.ssh
+            - ./conf/php/custom.ini:/usr/local/etc/php/conf.d/custom.ini
+            - ./conf/php/msmtprc:/etc/msmtprc
+            - ${WORK_DIR}:${WORK_DIR}
+        tty: true
+        stdin_open: true
+        working_dir: ${WORK_DIR}
+        restart: always
+        hostname: cli-container
+        container_name: cli
+    elasticsearch:
+        image: rogerdz/elasticsearch:${ES_VERSION}
+        environment:
+            - discovery.type=single-node
+            - "ES_JAVA_OPTS=${ES_JAVA_OPTS}"
+        volumes:
+            - elasticsearch_data:/usr/share/elasticsearch/data
+        restart: always
+        container_name: elasticsearch
+    httpd:
+        build: ./build/httpd
+        env_file: env/user.env
+        ports:
+            - "8080:80"
+        volumes:
+            - ./conf/httpd/vhosts.conf:/usr/local/apache2/conf/extra/httpd-vhosts.conf
+            - ${WORK_DIR}:${WORK_DIR}
+            - sock_data:/var/run/php
+        restart: always
+        container_name: httpd
+    adminer:
+        image: adminer
+        environment:
+            ADMINER_DEFAULT_SERVER: mariadb
+            ADMINER_PLUGINS: tables-filter json-column table-indexes-structure
+        ports:
+          - 81:8080
+        restart: always
+        container_name: adminer
+    maildev:
+        image: maildev/maildev
+        ports:
+            - 82:80
+        restart: always
+        container_name: maildev
+    blackfire:
+        image: blackfire/blackfire
+        env_file: env/blackfire.env
+        restart: always
+        container_name: blackfire
+        # links:
+        #     - nginx:home.test
+volumes:
+    sock_data:
+    elasticsearch_data:

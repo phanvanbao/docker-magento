@@ -1,0 +1,16 @@
+[mysqld]
+innodb_buffer_pool_size=256M
+max_connections=300
+max_allowed_packet=32M
+tmp_table_size=64M
+max_heap_table_size=64M
+join_buffer_size=8M
+
+slow_query_log=1
+slow_query_log_file=/var/log/mysql/mysql-slow.log
+long_query_time=5
+log_output=FILE
+
+# For mariadb 10.4 https://devdocs.magento.com/guides/v2.4/performance-best-practices/configuration.html
+optimizer_switch='rowid_filter=off'
+optimizer_use_condition_selectivity = 1
